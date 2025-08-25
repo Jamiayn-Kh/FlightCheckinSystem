@@ -31,50 +31,94 @@ namespace FlightCheckin.Desktop
 
         private void InitializeComponent()
         {
-            this.Text = "Flight Check-in System";
-            this.Size = new Size(800, 600);
+            this.Text = "✈️ Flight Check-in System";
+            this.Size = new Size(820, 720); // Increased size for better spacing
             this.StartPosition = FormStartPosition.CenterScreen;
+            this.BackColor = Color.FromArgb(241, 245, 249); // Modern slate background
+            this.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.Padding = new Padding(10); // Add form padding
 
             // Flight selection group
             var flightGroup = new GroupBox
             {
-                Text = "Flight Selection",
-                Location = new Point(10, 10),
-                Size = new Size(760, 100)
+                Text = "✈️ Flight Selection",
+                Location = new Point(25, 25),
+                Size = new Size(760, 120), // Increased height for better spacing
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(30, 41, 59),
+                BackColor = Color.FromArgb(255, 255, 255),
+                FlatStyle = FlatStyle.Flat,
+                Padding = new Padding(15, 20, 15, 15) // Add internal padding
             };
 
-            var flightLabel = new Label { Text = "Flight:", Location = new Point(10, 25) };
+            var flightLabel = new Label 
+            { 
+                Text = "Flight:", 
+                Location = new Point(25, 35), 
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                ForeColor = Color.FromArgb(51, 65, 85),
+                Size = new Size(65, 22)
+            };
             var flightCombo = new ComboBox
             {
                 Name = "flightCombo",
-                Location = new Point(80, 22),
-                Size = new Size(200, 23),
-                DropDownStyle = ComboBoxStyle.DropDownList
+                Location = new Point(95, 33),
+                Size = new Size(240, 28), // Slightly larger
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 9F),
+                BackColor = Color.White,
+                ForeColor = Color.FromArgb(51, 65, 85),
+                FlatStyle = FlatStyle.Flat
             };
 
             var refreshBtn = new Button
             {
-                Text = "Refresh",
-                Location = new Point(290, 22),
-                Size = new Size(80, 23)
+                Text = "🔄 Refresh",
+                Location = new Point(350, 32),
+                Size = new Size(120, 30), // Slightly larger
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                BackColor = Color.FromArgb(37, 99, 235),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                FlatAppearance = { BorderSize = 0, BorderColor = Color.FromArgb(29, 78, 216) },
+                Cursor = Cursors.Hand
             };
             refreshBtn.Click += RefreshFlights_Click;
 
-            var statusLabel = new Label { Text = "Status:", Location = new Point(10, 55) };
+            var statusLabel = new Label 
+            { 
+                Text = "Status:", 
+                Location = new Point(25, 75), 
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                ForeColor = Color.FromArgb(51, 65, 85),
+                Size = new Size(65, 22)
+            };
             var statusCombo = new ComboBox
             {
                 Name = "statusCombo",
-                Location = new Point(80, 52),
-                Size = new Size(200, 23),
-                DropDownStyle = ComboBoxStyle.DropDownList
+                Location = new Point(95, 73),
+                Size = new Size(240, 28),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 9F),
+                BackColor = Color.White,
+                ForeColor = Color.FromArgb(51, 65, 85),
+                FlatStyle = FlatStyle.Flat
             };
             statusCombo.Items.AddRange(Enum.GetNames<FlightStatus>());
 
             var changeStatusBtn = new Button
             {
-                Text = "Change Status",
-                Location = new Point(290, 52),
-                Size = new Size(100, 23)
+                Text = "✈️ Change Status",
+                Location = new Point(485, 72),
+                Size = new Size(140, 30),
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                BackColor = Color.FromArgb(16, 185, 129),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                FlatAppearance = { BorderSize = 0, BorderColor = Color.FromArgb(5, 150, 105) },
+                Cursor = Cursors.Hand
             };
             changeStatusBtn.Click += ChangeStatus_Click;
 
@@ -83,49 +127,99 @@ namespace FlightCheckin.Desktop
             // Passenger info group
             var passengerGroup = new GroupBox
             {
-                Text = "Passenger Information",
-                Location = new Point(10, 120),
-                Size = new Size(760, 120)
+                Text = "👤 Passenger Information",
+                Location = new Point(25, 160), // More space from previous group
+                Size = new Size(760, 140), // Increased height
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(30, 41, 59),
+                BackColor = Color.FromArgb(255, 255, 255),
+                FlatStyle = FlatStyle.Flat,
+                Padding = new Padding(15, 20, 15, 15)
             };
 
-            var passportLabel = new Label { Text = "Passport:", Location = new Point(10, 25) };
+            var passportLabel = new Label 
+            { 
+                Text = "Passport:", 
+                Location = new Point(25, 35), 
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                ForeColor = Color.FromArgb(51, 65, 85),
+                Size = new Size(75, 22)
+            };
             var passportText = new TextBox
             {
                 Name = "passportText",
-                Location = new Point(80, 22),
-                Size = new Size(200, 23)
+                Location = new Point(105, 33),
+                Size = new Size(240, 28),
+                Font = new Font("Segoe UI", 9F),
+                BackColor = Color.FromArgb(249, 250, 251),
+                ForeColor = Color.FromArgb(17, 24, 39),
+                BorderStyle = BorderStyle.FixedSingle
             };
 
-            var nameLabel = new Label { Text = "Name:", Location = new Point(10, 55) };
+            var nameLabel = new Label 
+            { 
+                Text = "Name:", 
+                Location = new Point(25, 70), 
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                ForeColor = Color.FromArgb(51, 65, 85),
+                Size = new Size(75, 22)
+            };
             var nameText = new TextBox
             {
                 Name = "nameText",
-                Location = new Point(80, 52),
-                Size = new Size(200, 23)
+                Location = new Point(105, 68),
+                Size = new Size(240, 28),
+                Font = new Font("Segoe UI", 9F),
+                BackColor = Color.FromArgb(249, 250, 251),
+                ForeColor = Color.FromArgb(17, 24, 39),
+                BorderStyle = BorderStyle.FixedSingle
             };
 
-            var seatLabel = new Label { Text = "Seat:", Location = new Point(10, 85) };
+            var seatLabel = new Label 
+            { 
+                Text = "Seat:", 
+                Location = new Point(25, 105), 
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                ForeColor = Color.FromArgb(51, 65, 85),
+                Size = new Size(75, 22)
+            };
             var seatRowText = new TextBox
             {
                 Name = "seatRowText",
-                Location = new Point(80, 82),
-                Size = new Size(50, 23),
-                Text = "1"
+                Location = new Point(105, 103),
+                Size = new Size(65, 28),
+                Text = "1",
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                BackColor = Color.FromArgb(249, 250, 251),
+                ForeColor = Color.FromArgb(17, 24, 39),
+                BorderStyle = BorderStyle.FixedSingle,
+                TextAlign = HorizontalAlignment.Center
             };
 
             var seatColText = new TextBox
             {
                 Name = "seatColText",
-                Location = new Point(140, 82),
-                Size = new Size(50, 23),
-                Text = "A"
+                Location = new Point(180, 103),
+                Size = new Size(65, 28),
+                Text = "A",
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                BackColor = Color.FromArgb(249, 250, 251),
+                ForeColor = Color.FromArgb(17, 24, 39),
+                BorderStyle = BorderStyle.FixedSingle,
+                TextAlign = HorizontalAlignment.Center
             };
 
             var checkinBtn = new Button
             {
-                Text = "Check-in",
-                Location = new Point(200, 82),
-                Size = new Size(80, 23)
+                Text = "🎫 Check-in",
+                Location = new Point(260, 102),
+                Size = new Size(130, 30),
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                BackColor = Color.FromArgb(147, 51, 234),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                FlatAppearance = { BorderSize = 0, BorderColor = Color.FromArgb(124, 58, 237) },
+                Cursor = Cursors.Hand
             };
             checkinBtn.Click += Checkin_Click;
 
@@ -134,38 +228,62 @@ namespace FlightCheckin.Desktop
             // Seats display group
             var seatsGroup = new GroupBox
             {
-                Text = "Seats",
-                Location = new Point(10, 250),
-                Size = new Size(760, 300)
+                Text = "💺 Seat Map",
+                Location = new Point(25, 315), // More space from previous group
+                Size = new Size(760, 320), // Increased height
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(30, 41, 59),
+                BackColor = Color.FromArgb(255, 255, 255),
+                FlatStyle = FlatStyle.Flat,
+                Padding = new Padding(15, 20, 15, 15)
             };
 
             var seatsList = new ListView
             {
                 Name = "seatsList",
-                Location = new Point(10, 20),
-                Size = new Size(740, 270),
+                Location = new Point(20, 30),
+                Size = new Size(720, 275), // Better size
                 View = View.Details,
                 FullRowSelect = true,
-                GridLines = true
+                GridLines = true,
+                Font = new Font("Segoe UI", 9F),
+                BackColor = Color.FromArgb(248, 250, 252),
+                ForeColor = Color.FromArgb(17, 24, 39),
+                BorderStyle = BorderStyle.None,
+                HeaderStyle = ColumnHeaderStyle.Nonclickable
             };
-            seatsList.Columns.Add("Row", 50);
-            seatsList.Columns.Add("Column", 50);
-            seatsList.Columns.Add("Status", 100);
-            seatsList.Columns.Add("Passenger", 200);
+            seatsList.Columns.Add("🔢 Row", 90);
+            seatsList.Columns.Add("🔤 Column", 90);
+            seatsList.Columns.Add("📊 Status", 140);
+            seatsList.Columns.Add("👤 Passenger", 350);
 
             seatsGroup.Controls.Add(seatsList);
+
+            // Visual separator line
+            var separatorLine = new Label
+            {
+                Location = new Point(25, 640),
+                Size = new Size(760, 2),
+                BackColor = Color.FromArgb(209, 213, 219),
+                BorderStyle = BorderStyle.None
+            };
 
             // Status display
             var statusDisplay = new Label
             {
                 Name = "statusDisplay",
-                Text = "Ready",
-                Location = new Point(10, 560),
-                Size = new Size(760, 20),
-                Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold)
+                Text = "🟢 Ready",
+                Location = new Point(25, 650), // Adjusted for new form size
+                Size = new Size(760, 30), // Slightly larger
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                ForeColor = Color.FromArgb(55, 65, 81),
+                BackColor = Color.FromArgb(243, 244, 246),
+                TextAlign = ContentAlignment.MiddleLeft,
+                Padding = new Padding(15, 0, 0, 0), // More padding
+                BorderStyle = BorderStyle.None
             };
 
-            this.Controls.AddRange(new Control[] { flightGroup, passengerGroup, seatsGroup, statusDisplay });
+            this.Controls.AddRange(new Control[] { flightGroup, passengerGroup, seatsGroup, separatorLine, statusDisplay });
         }
 
         private async Task LoadFlights()
@@ -404,8 +522,21 @@ namespace FlightCheckin.Desktop
                         {
                             var item = new ListViewItem(seat.Row.ToString());
                             item.SubItems.Add(seat.Column);
-                            item.SubItems.Add(seat.IsTaken ? "Taken" : "Available");
+                            item.SubItems.Add(seat.IsTaken ? "✅ Taken" : "🟢 Available");
                             item.SubItems.Add(seat.AssignedPassengerName ?? "");
+                            
+                            // Enhanced color coding for seat status
+                            if (seat.IsTaken)
+                            {
+                                item.BackColor = Color.FromArgb(254, 242, 242); // Modern light red
+                                item.ForeColor = Color.FromArgb(185, 28, 28); // Modern red
+                            }
+                            else
+                            {
+                                item.BackColor = Color.FromArgb(240, 253, 244); // Modern light green
+                                item.ForeColor = Color.FromArgb(22, 163, 74); // Modern green
+                            }
+                            
                             seatsList.Items.Add(item);
                         }
                     }
@@ -425,7 +556,7 @@ namespace FlightCheckin.Desktop
         private void UpdateStatus(string message)
         {
             var statusDisplay = (Label)Controls.Find("statusDisplay", true)[0];
-            statusDisplay.Text = $"{DateTime.Now:HH:mm:ss} - {message}";
+            statusDisplay.Text = $"🕒 {DateTime.Now:HH:mm:ss} - {message}";
         }
 
         private void ClearPassengerFields()
