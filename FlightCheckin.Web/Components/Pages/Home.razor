@@ -1,0 +1,113 @@
+﻿@page "/"
+
+<PageTitle>Flight Check-in System</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="jumbotron text-center">
+                <h1 class="display-4">Flight Check-in System</h1>
+                <p class="lead">Онгоцны зорчигч бүртгэл, мэдээлэх систем</p>
+                <hr class="my-4">
+                <p>Энэхүү систем нь зорчигчдийн бүртгэлийг хийж, нислэгийн мэдээллийг дэлгэцээр дамжуулан түгээх боломжийг олгодог.</p>
+                <a class="btn btn-primary btn-lg" href="/flightboard" role="button">Flight Board-руу орох</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Desktop Application</h5>
+                    <p class="card-text">Бүртгэлийн ажилтны Windows Forms апп. Зорчигчдийн бүртгэл хийх, суудлын мэдээлэл харах боломжтой.</p>
+                    <ul class="list-unstyled">
+                        <li>✓ Зорчигчийн пасспортын дугаараар хайх</li>
+                        <li>✓ Суудлын оноох</li>
+                        <li>✓ Boarding pass хэвлэх</li>
+                        <li>✓ Нислэгийн төлөв солих</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Web Application</h5>
+                    <p class="card-text">Мэдээллийн дэлгэцийн веб апп. Real-time байдлаар нислэгийн мэдээллийг харуулна.</p>
+                    <ul class="list-unstyled">
+                        <li>✓ Real-time flight status</li>
+                        <li>✓ SignalR ашигласан</li>
+                        <li>✓ Blazor Server</li>
+                        <li>✓ Seat map visualization</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Server Features</h5>
+                    <p class="card-text">Backend сервер нь REST API, Socket server, болон SignalR hub-тай.</p>
+                    <ul class="list-unstyled">
+                        <li>✓ REST API</li>
+                        <li>✓ Socket Server (TCP 8888)</li>
+                        <li>✓ SignalR Hub</li>
+                        <li>✓ SQLite Database</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Системийн онцлогууд</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Бүртгэлийн онцлогууд:</h6>
+                            <ul>
+                                <li>Зорчигчийн пасспортын дугаараар хайх</li>
+                                <li>Суудлын автоматаар эсвэл гараар сонгох</li>
+                                <li>Boarding pass үүсгэх</li>
+                                <li>Нислэгийн төлөв солих</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Техникийн онцлогууд:</h6>
+                            <ul>
+                                <li>Pessimistic locking - нэг суудлыг зэрэг эзлэхээс сэргийлэх</li>
+                                <li>Real-time мэдээлэл - SignalR ашигласан</li>
+                                <li>Socket programming - TCP сервер</li>
+                                <li>Entity Framework Core - SQLite</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .jumbotron {
+        background-color: #f8f9fa;
+        padding: 2rem;
+        border-radius: 0.3rem;
+        margin-bottom: 2rem;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    .card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        transition: box-shadow 0.3s ease-in-out;
+    }
+</style>
