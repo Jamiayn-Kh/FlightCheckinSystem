@@ -28,6 +28,18 @@ builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add CORS for SignalR
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("https://localhost:7075", "http://localhost:5002")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+    });
+});
+
 // Socket server (TCP 8888)
 builder.Services.AddHostedService<SocketServerService>();
 
@@ -72,6 +84,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
+
+// Enable CORS
+app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {

@@ -8,8 +8,8 @@ namespace FlightCheckin.Models;
 
 public class Passenger
 {
-    public int Id { get; set; }
-    public string PassportNumber { get; set; } = default!; // unique
+    public int Id {get; set;}
+    public string PassportNumber {get; set; } = default!; // unique
     public string FullName { get; set; } = default!;
 }
 

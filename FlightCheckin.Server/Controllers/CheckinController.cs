@@ -26,8 +26,23 @@ public class CheckinController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<CheckinResponse>> Post([FromBody] CheckinRequest req, CancellationToken ct)
     {
-        var res = await _checkin.AssignSeatAsync(req, ct);
-        await _hub.Clients.Group(req.FlightNumber).SendAsync("SeatAssigned", req.FlightNumber, res.SeatCode, ct);
-        return res;
+        try
+        {
+            var res = await _checkin.AssignSeatAsync(req, ct);
+
+            // Real-time notification to all clients in the flight group  
+            await _hub.Clients.Group(req.FlightNumber).SendAsync("SeatAssigned", req.FlightNumber, res.SeatCode);
+
+            return res;
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new CheckinResponse(
+                success: false,
+                message: ex.Message,
+                seatCode: null,
+                boardingPass: null
+            ));
+        }
     }
 }

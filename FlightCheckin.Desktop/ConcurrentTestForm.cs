@@ -17,7 +17,7 @@ namespace FlightCheckin.Desktop
 
         public ConcurrentTestForm()
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5000/") };
+            _httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5002/") };
             
             this.Text = "Concurrent Booking Test";
             this.Size = new Size(800, 600);

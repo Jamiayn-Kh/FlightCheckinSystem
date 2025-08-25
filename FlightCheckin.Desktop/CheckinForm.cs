@@ -21,7 +21,7 @@ namespace FlightCheckin.Desktop
         public CheckinForm()
         {
             InitializeComponent();
-            _httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5051/") };
+            _httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5002/") };
             _statusTimer = new System.Windows.Forms.Timer { Interval = 5000 }; // 5 seconds
             _statusTimer.Tick += StatusTimer_Tick;
             _statusTimer.Start();
