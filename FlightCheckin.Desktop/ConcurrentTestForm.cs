@@ -60,7 +60,7 @@ namespace FlightCheckin.Desktop
             Log("");
 
             var tasks = new List<Task>();
-            var seatRow = 1;
+            var seatRow = 7;
             var seatColumn = "A";
 
             for (int i = 1; i <= 5; i++)
