@@ -1,10 +1,10 @@
 @page "/flightboard"
-@using Microsoft.AspNetCore.SignalR.Client
 @using FlightCheckin.Models
+@using FlightCheckin.Web.Services
 @using System.Text.Json
 @implements IAsyncDisposable
 @inject IHttpClientFactory HttpClientFactory
-@inject IConfiguration Configuration
+@inject IFlightUpdateService FlightUpdateService
 
 <PageTitle>Flight Board</PageTitle>
 
@@ -130,17 +130,16 @@
     private List<FlightDto>? flights;
     private List<SeatDto>? seats;
     private string? selectedFlight;
-    private HubConnection? hubConnection;
-    private string serverBaseUrl = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        // HttpClient-ийн BaseAddress-ийг ашиглах
-        var httpClient = HttpClientFactory.CreateClient("server");
-        serverBaseUrl = httpClient.BaseAddress?.ToString() ?? "http://localhost:5051/";
+        // Subscribe to SignalR events
+        FlightUpdateService.FlightStatusUpdated += OnFlightStatusUpdated;
+        FlightUpdateService.SeatAssigned += OnSeatAssigned;
+        FlightUpdateService.SeatsUpdated += OnSeatsUpdated;
         
         await LoadFlights();
-        await InitializeSignalR();
+        await JoinFlightGroups();
     }
 
     private async Task LoadFlights()
@@ -161,41 +160,64 @@
         }
     }
 
-    private async Task InitializeSignalR()
+    private void OnFlightStatusUpdated(string flightNumber, FlightStatus status)
     {
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl($"{serverBaseUrl}flightStatusHub")
-            .WithAutomaticReconnect()
-            .Build();
-
-        hubConnection.On<string, FlightStatus>("FlightStatusUpdated", (flightNumber, status) =>
+        if (flights != null)
         {
-            if (flights != null)
+            var flight = flights.FirstOrDefault(f => f.FlightNumber == flightNumber);
+            if (flight != null)
             {
-                var flight = flights.FirstOrDefault(f => f.FlightNumber == flightNumber);
-                if (flight != null)
-                {
-                    flight.Status = status;
-                    StateHasChanged();
-                }
+                flight.Status = status;
+                InvokeAsync(StateHasChanged);
             }
-        });
+        }
+    }
 
-        hubConnection.On<string, string>("SeatAssigned", async (flightNumber, seatCode) =>
+    private void OnSeatAssigned(string flightNumber, string seatCode)
+    {
+        Console.WriteLine($"[DEBUG] OnSeatAssigned called: {flightNumber} -> {seatCode}");
+        if (selectedFlight == flightNumber)
         {
-            if (selectedFlight == flightNumber)
+            Console.WriteLine($"[DEBUG] Refreshing seats for selected flight: {flightNumber}");
+            InvokeAsync(async () => 
             {
                 await LoadSeats(flightNumber);
-            }
-        });
-
-        try
-        {
-            await hubConnection.StartAsync();
+                StateHasChanged();
+            });
         }
-        catch (Exception ex)
+    }
+
+    private void OnSeatsUpdated(string flightNumber)
+    {
+        Console.WriteLine($"[DEBUG] OnSeatsUpdated called: {flightNumber}");
+        Console.WriteLine($"[DEBUG] Current selectedFlight: {selectedFlight}");
+        
+        // Always refresh if we're viewing the seat map for this flight
+        if (selectedFlight == flightNumber)
         {
-            Console.WriteLine($"SignalR connection error: {ex.Message}");
+            Console.WriteLine($"[DEBUG] Refreshing seats for flight: {flightNumber}");
+            InvokeAsync(async () => 
+            {
+                await LoadSeats(flightNumber);
+                StateHasChanged();
+            });
+        }
+        // Also trigger a general refresh for any flight-related updates
+        else
+        {
+            Console.WriteLine($"[DEBUG] General state refresh triggered");
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task JoinFlightGroups()
+    {
+        if (flights != null)
+        {
+            foreach (var flight in flights)
+            {
+                await FlightUpdateService.JoinFlightGroup(flight.FlightNumber);
+            }
         }
     }
 
@@ -209,12 +231,19 @@
     {
         try
         {
+            Console.WriteLine($"[DEBUG] LoadSeats called for flight: {flightNumber}");
             var httpClient = HttpClientFactory.CreateClient("server");
             var response = await httpClient.GetAsync($"api/checkin/seats/{flightNumber}");
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                seats = JsonSerializer.Deserialize<List<SeatDto>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var newSeats = JsonSerializer.Deserialize<List<SeatDto>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                seats = newSeats;
+                Console.WriteLine($"[DEBUG] Loaded {seats?.Count} seats for flight {flightNumber}");
+            }
+            else
+            {
+                Console.WriteLine($"[DEBUG] Failed to load seats: {response.StatusCode}");
             }
         }
         catch (Exception ex)
@@ -261,10 +290,10 @@
 
     public async ValueTask DisposeAsync()
     {
-        if (hubConnection is not null)
-        {
-            await hubConnection.DisposeAsync();
-        }
+        // Unsubscribe from events
+        FlightUpdateService.FlightStatusUpdated -= OnFlightStatusUpdated;
+        FlightUpdateService.SeatAssigned -= OnSeatAssigned;
+        FlightUpdateService.SeatsUpdated -= OnSeatsUpdated;
     }
 }
 

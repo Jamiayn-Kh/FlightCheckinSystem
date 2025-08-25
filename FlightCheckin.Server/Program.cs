@@ -28,6 +28,18 @@ builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// CORS configuration for SignalR
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorClient", policy =>
+    {
+        policy.WithOrigins("http://localhost:5001", "https://localhost:7075", "https://localhost:5001")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 // Socket server (TCP 8888)
 builder.Services.AddHostedService<SocketServerService>();
 
@@ -79,6 +91,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowBlazorClient");
 app.UseRouting();
 app.MapControllers();
 app.MapHub<FlightStatusHub>("/flightStatusHub");
