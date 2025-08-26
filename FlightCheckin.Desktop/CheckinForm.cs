@@ -445,7 +445,15 @@ namespace FlightCheckin.Desktop
                     
                     if (checkinResponse?.Success == true)
                     {
-                        MessageBox.Show($"Check-in successful! Seat: {checkinResponse.SeatCode}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Show boarding pass immediately if available
+                        if (checkinResponse.BoardingPass != null)
+                        {
+                            ShowBoardingPass(checkinResponse.BoardingPass, request.FlightNumber, checkinResponse.SeatCode);
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Check-in successful! Seat: {checkinResponse.SeatCode}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
                         return true;
                     }
                 }
@@ -477,7 +485,15 @@ namespace FlightCheckin.Desktop
                 
                 if (checkinResponse?.Success == true)
                 {
-                    MessageBox.Show($"Check-in successful! Seat: {checkinResponse.SeatCode}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Show boarding pass immediately if available
+                    if (checkinResponse.BoardingPass != null)
+                    {
+                        ShowBoardingPass(checkinResponse.BoardingPass, request.FlightNumber, checkinResponse.SeatCode);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Check-in successful! Seat: {checkinResponse.SeatCode}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                     return true;
                 }
                 else
@@ -570,6 +586,21 @@ namespace FlightCheckin.Desktop
             nameText.Clear();
             seatRowText.Text = "1";
             seatColText.Text = "A";
+        }
+
+        private void ShowBoardingPass(BoardingPass boardingPass, string flightNumber, string seatCode)
+        {
+            try
+            {
+                var boardingPassForm = new BoardingPassForm(boardingPass, flightNumber, seatCode);
+                boardingPassForm.ShowDialog(this);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error displaying boarding pass: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Fallback to simple message
+                MessageBox.Show($"Check-in successful! Seat: {seatCode}\nBoarding Pass ID: BP{boardingPass.Id:D6}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
