@@ -34,6 +34,8 @@ namespace FlightCheckin.Desktop
             this.Text = "Flight Check-in System";
             this.Size = new Size(800, 600);
             this.StartPosition = FormStartPosition.CenterScreen;
+            this.DoubleBuffered = true;
+            this.Font = new Font("Segoe UI", 9F);
 
             // Flight selection group
             var flightGroup = new GroupBox
@@ -43,38 +45,38 @@ namespace FlightCheckin.Desktop
                 Size = new Size(760, 100)
             };
 
-            var flightLabel = new Label { Text = "Flight:", Location = new Point(10, 25) };
+            var flightLabel = new Label { Text = "Flight:", Location = new Point(10, 25), AutoSize = true };
             var flightCombo = new ComboBox
             {
                 Name = "flightCombo",
                 Location = new Point(80, 22),
-                Size = new Size(200, 23),
+                Size = new Size(220, 27),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
 
             var refreshBtn = new Button
             {
                 Text = "Refresh",
-                Location = new Point(290, 22),
-                Size = new Size(80, 23)
+                Location = new Point(310, 22),
+                Size = new Size(80, 27)
             };
             refreshBtn.Click += RefreshFlights_Click;
 
-            var statusLabel = new Label { Text = "Status:", Location = new Point(10, 55) };
+            var statusLabel = new Label { Text = "Status:", Location = new Point(10, 55), AutoSize = true };
             var statusCombo = new ComboBox
             {
                 Name = "statusCombo",
                 Location = new Point(80, 52),
-                Size = new Size(200, 23),
+                Size = new Size(220, 27),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
             statusCombo.Items.AddRange(Enum.GetNames<FlightStatus>());
 
             var changeStatusBtn = new Button
             {
-                Text = "Change Status",
-                Location = new Point(290, 52),
-                Size = new Size(100, 23)
+                Text = "Change",
+                Location = new Point(310, 52),
+                Size = new Size(80, 27)
             };
             changeStatusBtn.Click += ChangeStatus_Click;
 
@@ -88,44 +90,62 @@ namespace FlightCheckin.Desktop
                 Size = new Size(760, 120)
             };
 
-            var passportLabel = new Label { Text = "Passport:", Location = new Point(10, 25) };
+            var passportLabel = new Label { Text = "Passport:", Location = new Point(10, 25), AutoSize = true };
             var passportText = new TextBox
             {
                 Name = "passportText",
                 Location = new Point(80, 22),
-                Size = new Size(200, 23)
+                Size = new Size(220, 27),
+                AutoSize = false,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.White,
+                ForeColor = Color.Black,
+                RightToLeft = RightToLeft.No
             };
 
-            var nameLabel = new Label { Text = "Name:", Location = new Point(10, 55) };
+            var nameLabel = new Label { Text = "Name:", Location = new Point(10, 55), AutoSize = true };
             var nameText = new TextBox
             {
                 Name = "nameText",
                 Location = new Point(80, 52),
-                Size = new Size(200, 23)
+                Size = new Size(220, 27),
+                AutoSize = false,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.White,
+                ForeColor = Color.Black,
+                RightToLeft = RightToLeft.No
             };
 
-            var seatLabel = new Label { Text = "Seat:", Location = new Point(10, 85) };
+            var seatLabel = new Label { Text = "Seat:", Location = new Point(10, 85), AutoSize = true };
             var seatRowText = new TextBox
             {
                 Name = "seatRowText",
                 Location = new Point(80, 82),
-                Size = new Size(50, 23),
+                Size = new Size(70, 27),
+                AutoSize = false,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.White,
+                ForeColor = Color.Black,
                 Text = "1"
             };
 
             var seatColText = new TextBox
             {
                 Name = "seatColText",
-                Location = new Point(140, 82),
-                Size = new Size(50, 23),
+                Location = new Point(160, 82),
+                Size = new Size(70, 27),
+                AutoSize = false,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.White,
+                ForeColor = Color.Black,
                 Text = "A"
             };
 
             var checkinBtn = new Button
             {
                 Text = "Check-in",
-                Location = new Point(200, 82),
-                Size = new Size(80, 23)
+                Location = new Point(240, 82),
+                Size = new Size(80, 27)
             };
             checkinBtn.Click += Checkin_Click;
 
@@ -148,10 +168,10 @@ namespace FlightCheckin.Desktop
                 FullRowSelect = true,
                 GridLines = true
             };
-            seatsList.Columns.Add("Row", 50);
-            seatsList.Columns.Add("Column", 50);
-            seatsList.Columns.Add("Status", 100);
-            seatsList.Columns.Add("Passenger", 200);
+            seatsList.Columns.Add("Row", 80);
+            seatsList.Columns.Add("Column", 80);
+            seatsList.Columns.Add("Status", 120);
+            seatsList.Columns.Add("Passenger", 220);
 
             seatsGroup.Controls.Add(seatsList);
 
