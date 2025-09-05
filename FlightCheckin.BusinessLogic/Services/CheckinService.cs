@@ -31,7 +31,10 @@ public class CheckinService : ICheckinService
         CheckinValidator.Validate(request);
 
         // зорчигчийн нэрийг desktop-аас авч чадаагүй тохиолдолд паспортын дугаарыг нэр болгон ашиглая
-        var passenger = await _passengers.GetOrCreateAsync(request.PassportNumber, request.PassportNumber, ct);
+        var providedName = string.IsNullOrWhiteSpace(request.PassengerName)
+            ? request.PassportNumber
+            : request.PassengerName.Trim();
+        var passenger = await _passengers.GetOrCreateAsync(request.PassportNumber.Trim(), providedName, ct);
         var flight = await _flights.GetByNumberAsync(request.FlightNumber, ct)
                      ?? throw new InvalidOperationException("Flight not found");
 

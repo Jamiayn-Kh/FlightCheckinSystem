@@ -17,6 +17,9 @@ namespace FlightCheckin.Desktop
         private NetworkStream? _stream;
         private readonly HttpClient _httpClient;
         private System.Windows.Forms.Timer _statusTimer;
+        private BoardingPass? _lastBoardingPass;
+        private Button? _printBtn;
+        private System.Drawing.Printing.PrintDocument? _printDoc;
 
         public CheckinForm()
         {
@@ -149,7 +152,16 @@ namespace FlightCheckin.Desktop
             };
             checkinBtn.Click += Checkin_Click;
 
-            passengerGroup.Controls.AddRange(new Control[] { passportLabel, passportText, nameLabel, nameText, seatLabel, seatRowText, seatColText, checkinBtn });
+            _printBtn = new Button
+            {
+                Text = "Print pass",
+                Location = new Point(330, 82),
+                Size = new Size(90, 27),
+                Enabled = false
+            };
+            _printBtn.Click += PrintBtn_Click;
+
+            passengerGroup.Controls.AddRange(new Control[] { passportLabel, passportText, nameLabel, nameText, seatLabel, seatRowText, seatColText, checkinBtn, _printBtn });
 
             // Seats display group
             var seatsGroup = new GroupBox
@@ -324,12 +336,70 @@ namespace FlightCheckin.Desktop
                     UpdateStatus("Check-in successful");
                     await LoadSeats();
                     ClearPassengerFields();
+                    if (_lastBoardingPass != null && _printBtn != null)
+                    {
+                        _printBtn.Enabled = true;
+                    }
                 }
             }
             catch (Exception ex)
             {
                 UpdateStatus($"Check-in error: {ex.Message}");
             }
+        }
+
+        private void PrintBtn_Click(object? sender, EventArgs e)
+        {
+            if (_lastBoardingPass == null) return;
+
+            _printDoc = new System.Drawing.Printing.PrintDocument();
+            _printDoc.DocumentName = $"BoardingPass_{_lastBoardingPass.FlightNumber}_{_lastBoardingPass.PassportNumber}";
+            _printDoc.PrintPage += PrintDoc_PrintPage;
+
+            using var preview = new PrintPreviewDialog
+            {
+                Document = _printDoc,
+                Width = 1000,
+                Height = 800
+            };
+            preview.ShowDialog();
+        }
+
+        private void PrintDoc_PrintPage(object? sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            if (_lastBoardingPass == null) return;
+
+            var g = e.Graphics;
+            var bounds = e.MarginBounds;
+            var black = Brushes.Black;
+            var titleFont = new Font("Segoe UI", 16, FontStyle.Bold);
+            var labelFont = new Font("Segoe UI", 10, FontStyle.Regular);
+            var valueFont = new Font("Segoe UI", 12, FontStyle.Bold);
+
+            int y = bounds.Top;
+            int line = 26;
+
+            g.DrawString("BOARDING PASS", titleFont, black, bounds.Left, y); y += 40;
+            g.DrawLine(Pens.Black, bounds.Left, y, bounds.Right, y); y += 10;
+
+            void Row(string label, string value)
+            {
+                g.DrawString(label, labelFont, black, bounds.Left, y);
+                g.DrawString(value, valueFont, black, bounds.Left + 160, y - 2);
+                y += line;
+            }
+
+            Row("Flight:", _lastBoardingPass.FlightNumber);
+            Row("Passenger:", _lastBoardingPass.PassengerName);
+            Row("Passport:", _lastBoardingPass.PassportNumber);
+            Row("Seat:", _lastBoardingPass.SeatCode);
+            Row("Issued:", _lastBoardingPass.IssuedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm"));
+
+            y += 10;
+            g.DrawLine(Pens.Black, bounds.Left, y, bounds.Right, y); y += 12;
+            g.DrawString("Have a nice flight!", labelFont, black, bounds.Left, y);
+
+            e.HasMorePages = false;
         }
 
         private async Task<bool> TryHttpCheckin(CheckinRequest request)
@@ -347,6 +417,7 @@ namespace FlightCheckin.Desktop
                     
                     if (checkinResponse?.Success == true)
                     {
+                        _lastBoardingPass = checkinResponse.BoardingPass;
                         MessageBox.Show($"Check-in successful! Seat: {checkinResponse.SeatCode}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return true;
                     }
@@ -379,6 +450,7 @@ namespace FlightCheckin.Desktop
                 
                 if (checkinResponse?.Success == true)
                 {
+                    _lastBoardingPass = checkinResponse.BoardingPass;
                     MessageBox.Show($"Check-in successful! Seat: {checkinResponse.SeatCode}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return true;
                 }
